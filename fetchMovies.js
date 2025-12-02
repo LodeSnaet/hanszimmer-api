@@ -1,10 +1,15 @@
 import dotenv from 'dotenv';
-import {fetchMovieDetails} from "./fetchMovieDetails.js";
 dotenv.config();
 
+import {fetchMovieDetails} from "./fetchMovieDetails.js";
+import {processCountry} from "./processCountry.js";
+
+const hansZimmer = 947;
+
 export const fetchMovies = async () => {
-    const response = await fetch(`${process.env.BASE_URL}/person/947/movie_credits?api_key=${process.env.TMDB_API_KEY}`);
     let movies = []
+
+    const response = await fetch(`${process.env.BASE_URL}/person/${hansZimmer}/movie_credits?api_key=${process.env.TMDB_API_KEY}`);
 
     if (!response.ok) {
         console.error(`❌ HTTP Error: Status ${response.status} - ${response.statusText}`);
@@ -15,7 +20,6 @@ export const fetchMovies = async () => {
 
 
     for (const movie of data.crew) {
-        console.log('✅ Fetched Data:', movie);
         const movieDetails = await fetchMovieDetails(movie.id);
 
         for (const movieDetail of movieDetails) {
@@ -23,12 +27,15 @@ export const fetchMovies = async () => {
                 {
                     id: movie.id,
                     title: movieDetail.title,
-                    overview: movieDetail.overview
+                    overview: movieDetail.overview,
+                    poster_path: `${process.env.FULL_POSTER_PATH}/original${movieDetail.poster_path}`,
+                    origin_country: await processCountry(movieDetail.origin_country[0]),
                 }
             );
         }
     }
+    console.log('✅ Fetched Data:', movies[0] );
 
 
-    return movies || [];
+    return movies || [] ;
 }
