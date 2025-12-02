@@ -17,9 +17,7 @@ export const fetchSpotifyAuth = async () => {
             throw new Error(`Spotify authentication failed.`);
         }
 
-        const data = await response.json();
-
-        return data;
+        return await response.json();
     } catch (error) {
         console.error('An error occurred during Spotify fetch:', error.message);
         throw error;
