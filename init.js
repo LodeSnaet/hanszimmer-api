@@ -18,6 +18,8 @@ const initialize = async () => {
             PORT,
             () => console.log(`🚀 Server running on http://localhost:${PORT}`)
         );
+
+
     } catch (err) {
         console.error('Spotify authentication failed:', err);
     }
