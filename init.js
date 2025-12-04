@@ -13,7 +13,6 @@ const initialize = async () => {
 
     try {
         process.env.TIDAL_ACCESS_TOKEN = authData.access_token;
-        console.log('Current Access Token Value (First 10 chars):', process.env.TIDAL_ACCESS_TOKEN ? process.env.TIDAL_ACCESS_TOKEN.substring(0, 10) + '...' : 'TOKEN IS UNDEFINED');
         app.listen(
             PORT,
             () => console.log(`🚀 Server running on http://localhost:${PORT}`)

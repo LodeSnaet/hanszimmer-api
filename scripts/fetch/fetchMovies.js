@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import {fetchMovieDetails} from "./fetchMovieDetails.js";
 import {processCountry} from "../process/processCountry.js";
+import {fetchTidalAlbum} from "./fetchTidalAlbum.js";
 
 dotenv.config();
 
@@ -12,7 +13,7 @@ export const fetchMovies = async () => {
     const response = await fetch(`${process.env.BASE_URL}/person/${hansZimmer}/movie_credits?api_key=${process.env.TMDB_API_KEY}`);
 
     if (!response.ok) {
-        console.error(`❌ HTTP Error: Status ${response.status} - ${response.statusText}`);
+        console.error(`Failed to fetch movies: ${response.status} - ${response.statusText}`);
         throw new Error(`API request failed with status ${response.status}`);
     }
 
@@ -23,6 +24,10 @@ export const fetchMovies = async () => {
         const movieDetails = await fetchMovieDetails(movie.id);
 
         for (const movieDetail of movieDetails) {
+            console.log('Current Access Token Value (First 10 chars):', process.env.TIDAL_ACCESS_TOKEN ? process.env.TIDAL_ACCESS_TOKEN : 'TOKEN IS UNDEFINED');
+
+            const  tidalAlbum = await fetchTidalAlbum(movieDetail.title);
+
             movies.push(
                 {
                     id: movie.id,
@@ -30,6 +35,7 @@ export const fetchMovies = async () => {
                     overview: movieDetail.overview,
                     poster_path: `${process.env.FULL_POSTER_PATH}/original${movieDetail.poster_path}`,
                     origin_country: await processCountry(movieDetail.origin_country[0]),
+                    tidal_album: tidalAlbum
                 }
             );
         }
