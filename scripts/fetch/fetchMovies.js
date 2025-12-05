@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import {fetchMovieDetails} from "./fetchMovieDetails.js";
 import {processCountry} from "../process/processCountry.js";
-import {fetchTidalAlbum} from "./fetchTidalAlbum.js";
+import {fetchTidalAlbums} from "./fetchTidalAlbum.js";
 
 dotenv.config();
 
@@ -27,7 +27,7 @@ export const fetchMovies = async () => {
                     overview: movieDetail.overview,
                     poster_path: `${process.env.FULL_POSTER_PATH}/original${movieDetail.poster_path}`,
                     origin_country: await processCountry(movieDetail.origin_country[0]),
-                    tidal_album: await fetchTidalAlbum(movieDetail.title)
+                    tidal_album: await fetchTidalAlbums(movieDetail.title, movieDetail.origin_country[0])
                 }
             );
         }
